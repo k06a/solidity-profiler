@@ -88,20 +88,20 @@ MyContract.deployed().then(instance => {
 ### Running out of memory (Locally and in CI)
 (See [issue #59](https://github.com/sc-forks/solidity-coverage/issues/59)).
 If your target contains dozens of contracts, you may run up against node's 1.7MB memory cap during the
-contract compilation step. This can be addressed by setting the `testCommand` option in `.solcover.js` as
+contract compilation step. This can be addressed by setting the `testCommand` option in `.solprofiler.js` as
 below:
 ```javascript
-testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network coverage'
+testCommand: 'node --max-old-space-size=4096 ../node_modules/.bin/truffle test --network profiler'
 ```
-Note the path: it reaches outside a temporarily generated `coverageEnv` folder to access a locally
+Note the path: it reaches outside a temporarily generated `profilerEnv` folder to access a locally
 installed version of truffle in your root directory's `node_modules`.
 
-Large projects may also hit their CI container memcap running coverage after unit tests. This can be
+Large projects may also hit their CI container memcap running profiler after unit tests. This can be
 addressed on TravisCI by adding `sudo: required` to the `travis.yml`, which raises the container's
 limit to 7.5MB (ProTip courtesy of [@federicobond](https://github.com/federicobond).
 
 ### Running out of time (in mocha)
-Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under coverage, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `truffle.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
+Truffle sets a default mocha timeout of 5 minutes. Because tests run slower under profiler, it's possible to hit this limit with a test that iterates hundreds of times before producing a result. Timeouts can be disabled by configuring the mocha option in `truffle.js` as below: (ProTip courtesy of [@cag](https://github.com/cag))
 ```javascript
 module.exports = {
     networks: {
@@ -120,14 +120,14 @@ module.exports = {
 
 ### Using alongside HDWalletProvider
 [See Truffle issue #348](https://github.com/trufflesuite/truffle/issues/348).
-HDWalletProvider crashes solidity-coverage, so its constructor shouldn't be invoked while running this tool.
+HDWalletProvider crashes solidity-profiler, so its constructor shouldn't be invoked while running this tool.
 One way around this is to instantiate the HDWallet conditionally in `truffle.js`:
 
 ```javascript
 var HDWalletProvider = require('truffle-hdwallet-provider');
 var mnemonic = 'bark moss walnuts earth flames felt grateful dead sophia loren';
 
-if (!process.env.SOLIDITY_COVERAGE){
+if (!process.env.SOLIDITY_PROFILER){
   provider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/')
 }
 
@@ -146,10 +146,10 @@ module.exports = {
     ...etc...
 ```
 
-And set up an npm script to run the coverage tool like this:
+And set up an npm script to run the profiler tool like this:
 ```javascript
 "scripts": {
-    "coverage": "SOLIDITY_COVERAGE=true ./node_modules/.bin/solidity-coverage"
+    "profiler": "SOLIDITY_PROFILER=true ./node_modules/.bin/solidity-profiler"
 },
 ```
 
@@ -166,9 +166,9 @@ rather than
 require(x)
 ```
 
-Clearly, the coverage should be the same in these situations, as the code is (functionally) identical. Older versions of solidity-coverage did not treat these as branch points, and they were not considered in the branch coverage filter. Newer versions *do* count these as branch points, so if your tests did not include failure scenarios for `assert` or `require`, you may see a decrease in your coverage figures when upgrading `solidity-coverage`.
+Clearly, the profiler should be the same in these situations, as the code is (functionally) identical. Older versions of solidity-profiler did not treat these as branch points, and they were not considered in the branch profiler filter. Newer versions *do* count these as branch points, so if your tests did not include failure scenarios for `assert` or `require`, you may see a decrease in your profiler figures when upgrading `solidity-profiler`.
 
-If an `assert` or `require` is marked with an `I` in the coverage report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
+If an `assert` or `require` is marked with an `I` in the profiler report, then during your tests the conditional is never true. If it is marked with an `E`, then it is never false.
 
 ### Why are send and transfer throwing?
 
@@ -188,7 +188,7 @@ launching `testrpc-sc` on its own from the command line before running `solidity
 ### Running testrpc-sc on its own
 
 Sometimes its useful to launch `testrpc-sc` separately at the command line or with a script, after
-setting the `norpc` config option in `.solcover.js` to true:
+setting the `norpc` config option in `.solprofiler.js` to true:
 
 If you installed using npm
 ```

@@ -1,6 +1,6 @@
 /*
 Library and Using statements: invoking 'Test.not' should generate line and statement
-coverage for L 9, 10, and 19, plus function coverage for 'flip' and 'not'. 
+profiler for L 9, 10, and 19, plus function profiler for 'flip' and 'not'. 
  */
 library Boolean {
     struct Value { bool val; }

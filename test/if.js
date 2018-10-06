@@ -3,7 +3,7 @@
 const path = require('path');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
-const CoverageMap = require('./../lib/coverageMap');
+const ProfilerMap = require('./../lib/profilerMap');
 const vm = require('./util/vm');
 const assert = require('assert');
 
@@ -14,12 +14,12 @@ describe('if, else, and else if statements', () => {
   it('should cover an if statement with a bracketed consequent', done => {
     const contract = util.getCode('if/if-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Runs: a(1) => if (x == 1) { x = 3; }
     vm.execute(info.contract, 'a', [1]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -40,12 +40,12 @@ describe('if, else, and else if statements', () => {
   it('should cover an unbracketed if consequent (single line)', done => {
     const contract = util.getCode('if/if-no-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Same results as previous test
     vm.execute(info.contract, 'a', [1]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -65,12 +65,12 @@ describe('if, else, and else if statements', () => {
   it('should cover an if statement with multiline bracketed consequent', done => {
     const contract = util.getCode('if/if-with-brackets-multiline.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Runs: a(1) => if (x == 1){\n x = 3; }
     vm.execute(info.contract, 'a', [1]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1,
       });
@@ -91,11 +91,11 @@ describe('if, else, and else if statements', () => {
   it('should cover an unbracketed if consequent (multi-line)', done => {
     const contract = util.getCode('if/if-no-brackets-multiline.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
     // Same results as previous test
     vm.execute(info.contract, 'a', [1]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1,
       });
@@ -115,12 +115,12 @@ describe('if, else, and else if statements', () => {
   it('should cover a simple if statement with a failing condition', done => {
     const contract = util.getCode('if/if-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Runs: a(2) => if (x == 1) { x = 3; }
     vm.execute(info.contract, 'a', [2]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -141,11 +141,11 @@ describe('if, else, and else if statements', () => {
   it('should cover an if statement with a bracketed alternate', done => {
     const contract = util.getCode('if/else-with-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [2]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
       });
@@ -165,11 +165,11 @@ describe('if, else, and else if statements', () => {
   it('should cover an if statement with an unbracketed alternate', done => {
     const contract = util.getCode('if/else-without-brackets.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [2]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
       });
@@ -189,10 +189,10 @@ describe('if, else, and else if statements', () => {
   it('should cover nested if statements with missing else statements', done => {
     const contract = util.getCode('if/nested-if-missing-else.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
     vm.execute(info.contract, 'a', [2, 3, 3]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 7: 1,
       });

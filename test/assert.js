@@ -3,7 +3,7 @@
 const path = require('path');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
-const CoverageMap = require('./../lib/coverageMap');
+const ProfilerMap = require('./../lib/profilerMap');
 const vm = require('./util/vm');
 const assert = require('assert');
 
@@ -14,11 +14,11 @@ describe('asserts and requires', () => {
   it('should cover assert statements as if they are if statements when they pass', done => {
     const contract = util.getCode('assert/Assert.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [true]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -38,11 +38,11 @@ describe('asserts and requires', () => {
   it('should cover assert statements as if they are if statements when they fail', done => {
     const contract = util.getCode('assert/Assert.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [false]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -62,11 +62,11 @@ describe('asserts and requires', () => {
   it('should cover multi-line require statements as if they are if statements when they pass', done => {
     const contract = util.getCode('assert/RequireMultiline.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [true, true, true]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });
@@ -86,11 +86,11 @@ describe('asserts and requires', () => {
   it('should cover multi-line require statements as if they are if statements when they fail', done => {
     const contract = util.getCode('assert/RequireMultiline.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [true, true, false]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1,
       });

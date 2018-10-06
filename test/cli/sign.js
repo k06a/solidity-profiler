@@ -12,7 +12,7 @@ contract('Simple', accounts => {
   it('should set x to 5', () => {
     let simple;
     return Simple.deployed()
-        .then(instance => instance.test(5)) // We need this line to generate some coverage
+        .then(instance => instance.test(5)) // We need this line to generate some profiler
         .then(() => {
           const message = 'Enclosed is my formal application for permanent residency in New Zealand';
           const messageSha3 = web3.sha3(message);

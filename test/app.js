@@ -53,7 +53,7 @@ describe('app', () => {
   //
   // #2: Creating repeated instances of testrpc hits the container memory limit on
   // CI so these tests are disabled for that context
-  it('config with testrpc options string: should generate coverage, cleanup & exit(0)', () => {
+  it('config with testrpc options string: should generate profiler, cleanup & exit(0)', () => {
     if (!process.env.CI) {
       const privateKey = '0x3af46c9ac38ee1f01b05f9915080133f644bf57443f504d339082cb5285ccae4';
       const balance = '0xfffffffffffffff';
@@ -113,8 +113,8 @@ describe('app', () => {
 
   it('contract tests events: tests should pass without errors', () => {
     if (!process.env.CI) {
-      assert(pathExists('./coverage') === false, 'should start without: coverage');
-      assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+      assert(pathExists('./profiler') === false, 'should start without: profiler');
+      assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
       const testConfig = Object.assign({}, config);
 
@@ -126,21 +126,21 @@ describe('app', () => {
       shell.exec(script);
       assert(shell.error() === null, 'script should not error');
 
-      // Directory should have coverage report
-      assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-      assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+      // Directory should have profiler report
+      assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+      assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-      // Coverage should be real.
+      // Profiler should be real.
       // This test is tightly bound to the function names in Simple.sol
-      const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+      const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
       const path = Object.keys(produced)[0];
-      assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-      assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+      assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+      assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
       collectGarbage();
     }
   });
 
-  it('trufflejs specifies coverage network: should generate coverage, cleanup and exit(0)', () => {
+  it('trufflejs specifies profiler network: should generate profiler, cleanup and exit(0)', () => {
     if (!process.env.CI) {
       const trufflejs =
       `module.exports = {
@@ -150,7 +150,7 @@ describe('app', () => {
             port: 8545,
             network_id: "*"
           },
-          coverage: {
+          profiler: {
             host: "localhost",
             port: 8999,
             network_id: "*"
@@ -164,71 +164,71 @@ describe('app', () => {
       testConfig.port = 8555; // Manually inspect that port is actually set to 8999
 
       // Directory should be clean
-      assert(pathExists('./coverage') === false, 'should start without: coverage');
-      assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+      assert(pathExists('./profiler') === false, 'should start without: profiler');
+      assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
       // Run script (exits 0);
       mock.install('Simple.sol', 'simple.js', testConfig, trufflejs);
       shell.exec(script);
       assert(shell.error() === null, 'script should not error');
 
-      // Directory should have coverage report
-      assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-      assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+      // Directory should have profiler report
+      assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+      assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-      // Coverage should be real.
+      // Profiler should be real.
       // This test is tightly bound to the function names in Simple.sol
-      const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+      const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
       const path = Object.keys(produced)[0];
-      assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-      assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+      assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+      assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
       collectGarbage();
     }
   });
 
-  it('simple contract: should generate coverage, cleanup & exit(0)', () => {
+  it('simple contract: should generate profiler, cleanup & exit(0)', () => {
     // Directory should be clean
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run script (exits 0);
     mock.install('Simple.sol', 'simple.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    // Directory should have coverage report
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    // Directory should have profiler report
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    // Coverage should be real.
+    // Profiler should be real.
     // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
     collectGarbage();
   });
 
-  it('project uses truffle-config.js: should generate coverage, cleanup and exit(0)', () => {
+  it('project uses truffle-config.js: should generate profiler, cleanup and exit(0)', () => {
     // Directory should be clean
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run script (exits 0);
     mock.install('Simple.sol', 'simple.js', config, null, 'truffle-config.js');
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    // Directory should have coverage report
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    // Directory should have profiler report
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    // Coverage should be real.
+    // Profiler should be real.
     // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
     collectGarbage();
   });
 
@@ -242,111 +242,111 @@ describe('app', () => {
 
   it('tests use pure and view modifiers, including with libraries', () => {
     // Directory should be clean
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run script (exits 0);
     mock.installLibraryTest(config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    // Directory should have coverage report
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    // Directory should have profiler report
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    // Coverage should be real.
+    // Profiler should be real.
     // This test is tightly bound to the function names in TotallyPure.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'usesThem', 'coverage.json should map "usesThem"');
-    assert(produced[path].fnMap['2'].name === 'isPure', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'usesThem', 'profiler.json should map "usesThem"');
+    assert(produced[path].fnMap['2'].name === 'isPure', 'profiler.json should map "getX"');
     collectGarbage();
   });
 
-  it('tests require assets outside of test folder: should generate coverage, cleanup & exit(0)', () => {
+  it('tests require assets outside of test folder: should generate profiler, cleanup & exit(0)', () => {
     // Directory should be clean
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run script (exits 0);
     mock.install('Simple.sol', 'requires-externally.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    // Directory should have coverage report
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    // Directory should have profiler report
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    // Coverage should be real.
+    // Profiler should be real.
     // This test is tightly bound to the function names in Simple.sol
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
     collectGarbage();
   });
 
-  it('contract only uses .call: should generate coverage, cleanup & exit(0)', () => {
+  it('contract only uses .call: should generate profiler, cleanup & exit(0)', () => {
     // Run against contract that only uses method.call.
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
     mock.install('OnlyCall.sol', 'only-call.js', config);
 
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'addTwo', 'coverage.json should map "addTwo"');
+    assert(produced[path].fnMap['1'].name === 'addTwo', 'profiler.json should map "addTwo"');
     collectGarbage();
   });
 
-  it.skip('contract sends / transfers to instrumented fallback: coverage, cleanup & exit(0)', () => {
+  it.skip('contract sends / transfers to instrumented fallback: profiler, cleanup & exit(0)', () => {
     // Validate ethereumjs-vm hack to remove gas constraints on transfer() and send()
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     mock.install('Wallet.sol', 'wallet.js', config);
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
     assert(produced[path].fnMap['1'].name === 'transferPayment', 'should map "transferPayment"');
     collectGarbage();
   });
 
-  it('contract uses inheritance: should generate coverage, cleanup & exit(0)', () => {
+  it('contract uses inheritance: should generate profiler, cleanup & exit(0)', () => {
     // Run against a contract that 'is' another contract
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
     mock.installInheritanceTest(config);
 
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const ownedPath = Object.keys(produced)[0];
     const proxyPath = Object.keys(produced)[1];
 
-    assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'coverage.json should map "Owned"');
-    assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'coverage.json should map "isOwner"');
+    assert(produced[ownedPath].fnMap['1'].name === 'Owned', 'profiler.json should map "Owned"');
+    assert(produced[proxyPath].fnMap['1'].name === 'isOwner', 'profiler.json should map "isOwner"');
     collectGarbage();
   });
 
-  it('contracts are skipped: should generate coverage, cleanup & exit(0)', () => {
+  it('contracts are skipped: should generate profiler, cleanup & exit(0)', () => {
     // Skip instrumentation of some contracts
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
     const testConfig = Object.assign({}, config);
 
     testConfig.skipFiles = ['Owned.sol'];
@@ -355,35 +355,35 @@ describe('app', () => {
     shell.exec(script);
     assert(shell.error() === null, 'script should not error');
 
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const firstKey = Object.keys(produced)[0];
-    assert(Object.keys(produced).length === 1, 'coverage.json should only contain instrumentation for one contract');
-    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'coverage.json should only contain instrumentation for Proxy.sol');
+    assert(Object.keys(produced).length === 1, 'profiler.json should only contain instrumentation for one contract');
+    assert(firstKey.substr(firstKey.length - 9) === 'Proxy.sol', 'profiler.json should only contain instrumentation for Proxy.sol');
     collectGarbage();
   });
 
-  it('truffle tests failing: should generate coverage, cleanup & exit(1)', () => {
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+  it('truffle tests failing: should generate profiler, cleanup & exit(1)', () => {
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run with Simple.sol and a failing assertion in a truffle test
     mock.install('Simple.sol', 'truffle-test-fail.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should exit 1');
-    assert(pathExists('./coverage') === true, 'script should gen coverage folder');
-    assert(pathExists('./coverage.json') === true, 'script should gen coverage.json');
+    assert(pathExists('./profiler') === true, 'script should gen profiler folder');
+    assert(pathExists('./profiler.json') === true, 'script should gen profiler.json');
 
-    const produced = JSON.parse(fs.readFileSync('./coverage.json', 'utf8'));
+    const produced = JSON.parse(fs.readFileSync('./profiler.json', 'utf8'));
     const path = Object.keys(produced)[0];
-    assert(produced[path].fnMap['1'].name === 'test', 'coverage.json should map "test"');
-    assert(produced[path].fnMap['2'].name === 'getX', 'coverage.json should map "getX"');
+    assert(produced[path].fnMap['1'].name === 'test', 'profiler.json should map "test"');
+    assert(produced[path].fnMap['2'].name === 'getX', 'profiler.json should map "getX"');
     collectGarbage();
   });
 
-  it('deployment cost > block gasLimit: should generate coverage, cleanup & exit(0)', () => {
+  it('deployment cost > block gasLimit: should generate profiler, cleanup & exit(0)', () => {
     // Just making sure Expensive.sol compiles and deploys here.
     mock.install('Expensive.sol', 'block-gas-limit.js', config);
     shell.exec(script);
@@ -391,41 +391,41 @@ describe('app', () => {
     collectGarbage();
   });
 
-  it('truffle crashes: should generate NO coverage, cleanup and exit(1)', () => {
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+  it('truffle crashes: should generate NO profiler, cleanup and exit(1)', () => {
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run with Simple.sol and a syntax error in the truffle test
     mock.install('Simple.sol', 'truffle-crash.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
-    assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
-    assert(pathExists('./coverage.json') !== true, 'script should NOT gen coverage.json');
+    assert(pathExists('./profiler') !== true, 'script should NOT gen profiler folder');
+    assert(pathExists('./profiler.json') !== true, 'script should NOT gen profiler.json');
     collectGarbage();
   });
 
-  it('instrumentation errors: should generate NO coverage, cleanup and exit(1)', () => {
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+  it('instrumentation errors: should generate NO profiler, cleanup and exit(1)', () => {
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
 
     // Run with SimpleError.sol (has syntax error) and working truffle test
     mock.install('SimpleError.sol', 'simple.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
-    assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
-    assert(pathExists('./coverage.json') !== true, 'script should NOT gen coverage.json');
+    assert(pathExists('./profiler') !== true, 'script should NOT gen profiler folder');
+    assert(pathExists('./profiler.json') !== true, 'script should NOT gen profiler.json');
     collectGarbage();
   });
 
-  it('no events log produced: should generate NO coverage, cleanup and exit(1)', () => {
+  it('no events log produced: should generate NO profiler, cleanup and exit(1)', () => {
     // Run contract and test that pass but fire no events
-    assert(pathExists('./coverage') === false, 'should start without: coverage');
-    assert(pathExists('./coverage.json') === false, 'should start without: coverage.json');
+    assert(pathExists('./profiler') === false, 'should start without: profiler');
+    assert(pathExists('./profiler.json') === false, 'should start without: profiler.json');
     mock.install('Empty.sol', 'empty.js', config);
     shell.exec(script);
     assert(shell.error() !== null, 'script should error');
-    assert(pathExists('./coverage') !== true, 'script should NOT gen coverage folder');
-    assert(pathExists('./coverage.json') !== true, 'script should NOT gen coverage.json');
+    assert(pathExists('./profiler') !== true, 'script should NOT gen profiler folder');
+    assert(pathExists('./profiler.json') !== true, 'script should NOT gen profiler.json');
     collectGarbage();
   });
 });

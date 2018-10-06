@@ -1,6 +1,6 @@
 pragma solidity ^0.4.3;
 
-// This is for a test that verifies solcover can instrument a 
+// This is for a test that verifies solprofiler can instrument a 
 // another kind of long CallExpression chain
 contract Test {
     function paySomeone(address x, address y) payable {

@@ -4,7 +4,7 @@ const solc = require('solc');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
 const path = require('path');
-const CoverageMap = require('./../lib/coverageMap');
+const ProfilerMap = require('./../lib/profilerMap');
 const vm = require('./util/vm');
 const assert = require('assert');
 
@@ -69,11 +69,11 @@ describe('function declarations', () => {
   it('should cover a simple invoked function call', done => {
     const contract = util.getCode('function/function-call.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         7: 1,
       });
@@ -92,11 +92,11 @@ describe('function declarations', () => {
   it('should cover a constructor that uses the `constructor` keyword', done  => {
     const contract = util.getCode('function/constructor-keyword.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         6: 1, 11: 1
       });
@@ -115,12 +115,12 @@ describe('function declarations', () => {
   it('should cover a constructor call that chains to a method call', done => {
     const contract = util.getCode('function/chainable.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
     // We try and call a contract at an address where it doesn't exist and the VM
-    // throws, but we can verify line / statement / fn coverage is getting mapped.
+    // throws, but we can verify line / statement / fn profiler is getting mapped.
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         9: 1,
       });
@@ -139,12 +139,12 @@ describe('function declarations', () => {
   it('should cover a constructor call that chains to a method call', done => {
     const contract = util.getCode('function/chainable-value.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
     // The vm runs out of gas here - but we can verify line / statement / fn
-    // coverage is getting mapped.
+    // profiler is getting mapped.
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         10: 1,
       });

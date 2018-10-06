@@ -5,12 +5,12 @@ const death = require('death');
 
 const log = console.log;
 
-const config = reqCwd.silent('./.solcover.js') || {};
+const config = reqCwd.silent('./.solprofiler.js') || {};
 const app = new App(config);
 
 death((signal, err) => app.cleanUp(err));
 
-app.generateCoverageEnvironment();
+app.generateProfilerEnvironment();
 app.instrumentTarget();
 app.launchTestrpc()
   .then(() => {

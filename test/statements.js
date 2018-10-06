@@ -3,7 +3,7 @@
 const solc = require('solc');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
-const CoverageMap = require('./../lib/coverageMap');
+const ProfilerMap = require('./../lib/profilerMap');
 const path = require('path');
 const vm = require('./util/vm');
 const assert = require('assert');
@@ -81,13 +81,13 @@ describe('generic statements', () => {
   });
 
   it('should cover an emitted event statement', done => {
-    const contract = util.getCode('statements/emit-coverage.sol');
+    const contract = util.getCode('statements/emit-profiler.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         6: 1
       });
@@ -105,11 +105,11 @@ describe('generic statements', () => {
   it('should cover a statement following a close brace', done => {
     const contract = util.getCode('statements/post-close-brace.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', [1]).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 0, 8: 1,
       });
@@ -129,11 +129,11 @@ describe('generic statements', () => {
   it('should cover a library statement and an invoked library method', done => {
     const contract = util.getCode('statements/library.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'not', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         9: 1, 10: 1, 19: 1,
       });
@@ -151,11 +151,11 @@ describe('generic statements', () => {
   it('should cover a tuple statement', done => {
     const contract = util.getCode('statements/tuple.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         6: 1, 10: 1, 11: 1,
       });
@@ -173,11 +173,11 @@ describe('generic statements', () => {
   it('should cover an empty bodied contract statement', done => {
     const contract = util.getCode('statements/empty-contract-body.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, null, []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {});
       assert.deepEqual(mapping[filePath].b, {});
       assert.deepEqual(mapping[filePath].s, {});

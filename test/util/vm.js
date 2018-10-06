@@ -74,7 +74,7 @@ function createAccount(trie) {
 
 function deploy(vm, code) {
   const tx = new Transaction({
-    gasPrice: '1', gasLimit: 'ffffff', data: code,
+    gasPrice: '1', gasLimit: 'fffffffffff', data: code,
   });
   tx.sign(new Buffer(secretKey, 'hex'));
 
@@ -105,7 +105,7 @@ function callMethod(vm, abi, address, functionName, args) {
   const txData = encodeFunctionTxData(functionName, types, args);
   const options = {
     gasPrice: '0x1',
-    gasLimit: '0xffffff',
+    gasLimit: '0xfffffffffff',
     to: utils.bufferToHex(address),
     data: txData,
     nonce: '0x1',

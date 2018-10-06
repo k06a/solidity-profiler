@@ -1,8 +1,8 @@
 allFiredEvents
-scTopics
-scDebugLog
-coverage.json
-coverage/
+spTopics
+spDebugLog
+profiler.json
+profiler/
 node_modules/
 .changelog
 .DS_Store

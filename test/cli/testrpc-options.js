@@ -9,7 +9,7 @@ contract('Simple', accounts => {
     assert(accounts[0] === '0xa4860cedd5143bd63f347cab453bf91425f8404f');
   });
 
-  // Generate some coverage so the script doesn't exit(1) because there are no events
+  // Generate some profiler so the script doesn't exit(1) because there are no events
   it('should set x to 5', () => {
     let simple;
     return Simple.deployed().then(instance => {

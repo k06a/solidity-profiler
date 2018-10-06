@@ -1,9 +1,9 @@
 {
-  "name": "solidity-coverage",
-  "version": "0.5.11",
+  "name": "solidity-profiler",
+  "version": "0.1.0",
   "description": "",
   "bin": {
-    "solidity-coverage": "./bin/exec.js"
+    "solidity-profiler": "./bin/exec.js"
   },
   "directories": {
     "test": "test"
@@ -13,10 +13,10 @@
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 60000 --exit",
     "lint": "./node_modules/.bin/eslint --fix ./"
   },
-  "homepage": "https://github.com/sc-forks/solidity-coverage",
+  "homepage": "https://github.com/k06a/solidity-profiler",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sc-forks/solidity-coverage.git"
+    "url": "https://github.com/k06a/solidity-profiler.git"
   },
   "author": "",
   "license": "ISC",

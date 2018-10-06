@@ -3,7 +3,7 @@
 const path = require('path');
 const getInstrumentedVersion = require('./../lib/instrumentSolidity.js');
 const util = require('./util/util.js');
-const CoverageMap = require('./../lib/coverageMap');
+const ProfilerMap = require('./../lib/profilerMap');
 const vm = require('./util/vm');
 const assert = require('assert');
 
@@ -15,11 +15,11 @@ describe.skip('conditional statements', () => {
     const contract = util.getCode('conditional/sameline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
     console.log(info.contract)
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
       });
@@ -39,11 +39,11 @@ describe.skip('conditional statements', () => {
   it('should cover a conditional that reaches the alternate (same-line)', done => {
     const contract = util.getCode('conditional/sameline-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
       });
@@ -63,11 +63,11 @@ describe.skip('conditional statements', () => {
   it('should cover a conditional that reaches the consequent (multi-line)', done => {
     const contract = util.getCode('conditional/multiline-consequent.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
       });
@@ -87,11 +87,11 @@ describe.skip('conditional statements', () => {
   it('should cover a conditional that reaches the alternate (multi-line)', done => {
     const contract = util.getCode('conditional/multiline-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
       });
@@ -111,12 +111,12 @@ describe.skip('conditional statements', () => {
   it('should cover a DeclarativeExpression assignment by conditional that reaches the alternate', done => {
     const contract = util.getCode('conditional/declarative-exp-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Runs bool z = (x) ? false : true;
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1,
       });
@@ -136,12 +136,12 @@ describe.skip('conditional statements', () => {
   it('should cover an Identifier assignment by conditional that reaches the alternate', done => {
     const contract = util.getCode('conditional/identifier-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     // Runs z = (x) ? false : true;
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         5: 1, 6: 1, 7: 1, 8: 1,
       });
@@ -161,11 +161,11 @@ describe.skip('conditional statements', () => {
   it('should cover an assignment to a member expression (reaches the alternate)', done => {
     const contract = util.getCode('conditional/mapping-assignment.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
 
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {
         11: 1, 12: 1,
       });
@@ -182,18 +182,18 @@ describe.skip('conditional statements', () => {
     }).catch(done);
   });
 
-  // Solcover has trouble with this case. The conditional coverage strategy relies on being able to
+  // Solprofiler has trouble with this case. The conditional profiler strategy relies on being able to
   // reference the left-hand variable before its value is assigned. Solidity doesn't allow this
   // for 'var'.
 
   /* it('should cover a var decl assignment by conditional that reaches the alternate', (done) => {
     const contract = util.getCode('conditional/variable-decl-assignment-alternate.sol');
     const info = getInstrumentedVersion(contract, filePath);
-    const coverage = new CoverageMap();
-    coverage.addContract(info, filePath);
+    const profiler = new ProfilerMap();
+    profiler.addContract(info, filePath);
     // Runs var z = (x) ? y = false : y = false;
     vm.execute(info.contract, 'a', []).then(events => {
-      const mapping = coverage.generate(events, pathPrefix);
+      const mapping = profiler.generate(events, pathPrefix);
       assert.deepEqual(mapping[filePath].l, {5: 1, 6: 1, 7: 1});
       assert.deepEqual(mapping[filePath].b, {'1': [0, 1]});
       assert.deepEqual(mapping[filePath].s, {1: 1, 2: 1, 3: 1});
