@@ -1,4 +1,53 @@
-# solidity-profiler
+# solidity-profiler - Hackathon Submision
+Sometimes it could be excruciating to find out most `hungry` lines of solidity code.
+It could happen because of wrong loop condition or overflow, and unclear.
+We've thought that Solidity profiler is missing part for the Ethereum development eco-system and decided to implement working prototype during hackathon using wide known tools.
+
+## Implementation
+We've [forked solidity coverage](https://github.com/k06a/solidity-profiler). And after did following fixes:
+- Bulk renaming to save compatibility with the original project.
+- Extend code coverage event with `gasleft()` value
+- Patch event procession and report generation step, to nicely render it with `Istanbul` code coverage utils that is a part of solidity coverage
+
+## Demo project
+To demonstrate how profiler works we take our fork of [ecsol](https://github.com/1Address/ecsol/tree/feature/solidity-profiler) project.
+On that fork we apply has gas optimization that was [purposed by Vitalik](https://ethresear.ch/t/you-can-kinda-abuse-ecrecover-to-do-ecmul-in-secp256k1-today/2384).
+So, we were really curious to know the details of our gas optimization.
+
+To get solidity profiler output on sample project do the following:
+
+First, you need the following global dependencies installed:
+```
+npm install -g truffle
+npm install -g ganache-cli
+```
+After clone repositories and perform `npm i` and `npm run profiler`
+```
+mkdir solidity-profiler-demo
+cd solidity-profiler-demo
+
+git clone https://github.com/k06a/solidity-profiler
+cd solidity-profiler
+npm i
+cd ../
+
+git clone -b feature/solidity-profiler https://github.com/1Address/ecsol
+cd ecsol
+npm i
+
+npm run profiler
+```
+Discover report file in `ecsol/coverage/index.html` directory
+
+
+## Further Plans
+Our hackathon soltion is just a proof of concept and we think that can improve it in the following way:
+- Display min/max/avg/median gas consumption for each line
+- Split complex lines to multiple lines with identation
+- Make a lot of other improvements and fixes on a long way to the production use ;-)
+
+-------
+# Original readme from forked repo:
 
 [![Join the chat at https://gitter.im/k06a/solidity-profiler](https://badges.gitter.im/k06a/solidity-profiler.svg)](https://gitter.im/k06a/solidity-profiler?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/solidity-profiler.svg)](https://badge.fury.io/js/solidity-profiler)
